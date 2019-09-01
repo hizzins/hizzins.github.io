@@ -12,30 +12,14 @@ const Home = () => (
     <Nav />
 
     <div className='hero'>
-      <h1 className='title'>Welcome to Next.js!</h1>
+      <h1 className='title'>
+        Codelab Next.js 2nd Library
+      </h1>
       <p className='description'>
-        To get started, edit <code>pages/index.js</code> and save to reload.
+        코드랩 Next.js 2기 수업을 통해 나온 산출물입니다.
       </p>
-
-      <div className='row'>
-        <Link href='https://github.com/zeit/next.js#setup'>
-          <a className='card'>
-            <h3>Getting Started &rarr;</h3>
-            <p>Learn more about Next.js on GitHub and in their examples.</p>
-          </a>
-        </Link>
-        <Link href='https://github.com/zeit/next.js/tree/master/examples'>
-          <a className='card'>
-            <h3>Examples &rarr;</h3>
-            <p>Find other example boilerplates on the Next.js GitHub.</p>
-          </a>
-        </Link>
-        <Link href='https://github.com/zeit/next.js'>
-          <a className='card'>
-            <h3>Create Next App &rarr;</h3>
-            <p>Was this tool helpful? Let us know how we can improve it!</p>
-          </a>
-        </Link>
+      <div className="text-center">
+        <button className="btn btn-primary btn-large">바로 시작하기</button>
       </div>
     </div>
 
