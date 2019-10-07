@@ -23,12 +23,18 @@ export default class MyDocument extends Document {
               integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
               crossOrigin="anonymous">
         </link>
+        <link rel="stylesheet"
+              href="/static/css/reset.css"
+              crossOrigin="anonymous">
+        </link>
       </Head>
       <body>
       <div id="root">
         <Main />
         <NextScript />
       </div>
+      <style jsx>{`
+      `}</style>
       </body>
       </html>
     );

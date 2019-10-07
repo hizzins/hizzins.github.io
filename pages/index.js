@@ -2,7 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import Nav from '../components/nav';
-import '../static/sass/import.scss';
 
 const Home = () => (
   <div>
@@ -20,7 +19,25 @@ const Home = () => (
       <canvas id="canvas"></canvas>
     </main>
 
-    <style jsx>{``}</style>
+    <style jsx>{`
+    .contents {
+      height: 100vh;
+      background-image: url('/static/images/amusement-park.png');
+      background-repeat: no-repeat;
+      background-size: 100%;
+      background-position: center;}
+    .title {
+      margin: 0;
+      width: 100%;
+      padding-top: 30px;
+      font-size: 48px;
+      text-align: center;
+      color: #272e59;
+    }
+    .description {
+      text-align: center;
+    }
+  `}</style>
   </div>
 )
 
