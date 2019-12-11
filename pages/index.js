@@ -20,13 +20,42 @@ const toRadian = (deg) => {
   return deg * Math.PI / 180;
 }
 
+const car = (angle) => {
+  const ratio = getRatio();
+  const carCanvas = document.getElementById('carCanvas');
+  const carCtx = carCanvas.getContext('2d');
+  const r = wheelImage.imageWidth / 2 + 20;
+  const xPos = Math.cos(toRadian(angle)) * r;
+  const yPos = Math.sin(toRadian(angle)) * r;
+  console.log('여기', angle);
+
+  carCtx.clearRect(0, 0, carCanvas.width, carCanvas.height);
+  carCtx.beginPath();
+  carCtx.arc(xPos + wheelImage.imageX + r, yPos + wheelImage.imageY + r, 50, 0, Math.PI, false);
+  carCtx.fillStyle = '#272e59';
+  carCtx.strokeStyle = '#272e59';
+  carCtx.lineWidth = 10;
+  carCtx.fill();
+
+  carCtx.beginPath();
+  carCtx.arc(xPos + wheelImage.imageX + r, yPos + wheelImage.imageY + r, 50, 0, Math.PI *2, false);
+  carCtx.strokeStyle = '#272e59';
+  carCtx.lineWidth = 10;
+  carCtx.stroke();
+
+  // carCtx.beginPath();
+  // carCtx.arc(xPos + 250, yPos + 150, 10, Math.PI, Math.PI * 2);
+  // carCtx.fill();
+}
+
 const drawWheel = () => {
-  canvas.wheelCtx.clearRect(wheelImage.imageX, wheelImage.imageY, wheelImage.imageWidth, wheelImage.imageHeight);
+  canvas.wheelCtx.clearRect(0, 0, canvas.wheelCanvas.width, canvas.wheelCanvas.height);
   canvas.wheelCtx.save();
   canvas.wheelCtx.setTransform(1,0,0,1,0,0);
   canvas.wheelCtx.translate(wheelImage.imageX + wheelImage.imageWidth / 2, wheelImage.imageY + wheelImage.imageHeight / 2);
   canvas.wheelCtx.rotate(toRadian(wheelDeg));
   // ctx.strokeRect(0 - wheelImage.imageWidth / 2, 0 - wheelImage.imageHeight / 2, wheelImage.imageWidth, wheelImage.imageHeight);
+
 
   canvas.wheelCtx.drawImage(
     wheelImage.image,
@@ -36,9 +65,12 @@ const drawWheel = () => {
     wheelImage.imageHeight
   );
 
+  car(wheelDeg);
+
   canvas.wheelCtx.restore();
 
   wheelDeg = wheelDeg > 360 ? 0 : wheelDeg + 0.05;
+
   requestAnimationFrame(drawWheel);
 }
 
@@ -100,6 +132,7 @@ const Home = () => {
         <div className="wrap-canvas">
           <canvas id="backgroundCanvas" className="background-canvas" width={canvasWidth} height={canvasHeight}></canvas>
           <canvas id="wheelCanvas" className="wheel-canvas" width={canvasWidth} height={canvasHeight}></canvas>
+          <canvas id="carCanvas" className="wheel-canvas" width={canvasWidth} height={canvasHeight}></canvas>
         </div>
       </main>
 
