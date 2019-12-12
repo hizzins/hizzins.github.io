@@ -20,44 +20,56 @@ const toRadian = (deg) => {
   return deg * Math.PI / 180;
 }
 
-const car = (angle) => {
+const drawCar = () => {
+
+}
+
+const renderCar = (angle) => {
   const ratio = getRatio();
   const carCanvas = document.getElementById('carCanvas');
   const carCtx = carCanvas.getContext('2d');
-  const r = wheelImage.imageWidth / 2 + 20;
+  const carRadius = 40;
+  const wheelRadius = wheelImage.imageWidth / 2;
+  const r = wheelRadius + carRadius; //wheelRadius + 20;
   const xPos = Math.cos(toRadian(angle)) * r;
   const yPos = Math.sin(toRadian(angle)) * r;
   console.log('여기', angle);
 
   carCtx.clearRect(0, 0, carCanvas.width, carCanvas.height);
+  carCtx.save();
   carCtx.beginPath();
-  carCtx.arc(xPos + wheelImage.imageX + r, yPos + wheelImage.imageY + r, 50, 0, Math.PI, false);
+  carCtx.arc(xPos + wheelImage.imageX + r - carRadius, yPos + wheelImage.imageY + r - carRadius, carRadius, 0, Math.PI, false);
   carCtx.fillStyle = '#272e59';
   carCtx.strokeStyle = '#272e59';
   carCtx.lineWidth = 10;
   carCtx.fill();
 
   carCtx.beginPath();
-  carCtx.arc(xPos + wheelImage.imageX + r, yPos + wheelImage.imageY + r, 50, 0, Math.PI *2, false);
+  carCtx.arc(xPos + wheelImage.imageX + r - carRadius, yPos + wheelImage.imageY + r - carRadius, carRadius, 0, Math.PI *2, false);
   carCtx.strokeStyle = '#272e59';
   carCtx.lineWidth = 10;
   carCtx.stroke();
 
   // carCtx.beginPath();
-  // carCtx.arc(xPos + 250, yPos + 150, 10, Math.PI, Math.PI * 2);
-  // carCtx.fill();
+  // carCtx.arc(wheelImage.imageX + r - carRadius, wheelImage.imageY + r - carRadius, r, 0, Math.PI *2, false);
+  // carCtx.strokeStyle = '#dd4b39';
+  // carCtx.lineWidth = 5;
+  // carCtx.stroke();
+
+  carCtx.restore();
 }
 
 const drawWheel = () => {
-  canvas.wheelCtx.clearRect(0, 0, canvas.wheelCanvas.width, canvas.wheelCanvas.height);
-  canvas.wheelCtx.save();
-  canvas.wheelCtx.setTransform(1,0,0,1,0,0);
-  canvas.wheelCtx.translate(wheelImage.imageX + wheelImage.imageWidth / 2, wheelImage.imageY + wheelImage.imageHeight / 2);
-  canvas.wheelCtx.rotate(toRadian(wheelDeg));
+  const wheelCtx = canvas.wheelCtx;
+  wheelCtx.clearRect(0, 0, canvas.wheelCanvas.width, canvas.wheelCanvas.height);
+  wheelCtx.save();
+  wheelCtx.setTransform(1,0,0,1,0,0);
+  wheelCtx.translate(wheelImage.imageX + wheelImage.imageWidth / 2, wheelImage.imageY + wheelImage.imageHeight / 2);
+  wheelCtx.rotate(toRadian(wheelDeg));
   // ctx.strokeRect(0 - wheelImage.imageWidth / 2, 0 - wheelImage.imageHeight / 2, wheelImage.imageWidth, wheelImage.imageHeight);
 
 
-  canvas.wheelCtx.drawImage(
+  wheelCtx.drawImage(
     wheelImage.image,
     0 - wheelImage.imageWidth / 2,
     0 - wheelImage.imageHeight / 2,
@@ -65,11 +77,12 @@ const drawWheel = () => {
     wheelImage.imageHeight
   );
 
-  car(wheelDeg);
+  renderCar(wheelDeg);
 
-  canvas.wheelCtx.restore();
+  wheelCtx.restore();
 
   wheelDeg = wheelDeg > 360 ? 0 : wheelDeg + 0.05;
+  // wheelDeg = wheelDeg > 360 ? 0 : wheelDeg + 0.5; // 테스트용
 
   requestAnimationFrame(drawWheel);
 }
