@@ -20,22 +20,13 @@ const toRadian = (deg) => {
   return deg * Math.PI / 180;
 }
 
-const drawCar = () => {
-
-}
-
-const renderCar = (angle) => {
-  const ratio = getRatio();
-  const carCanvas = document.getElementById('carCanvas');
-  const carCtx = carCanvas.getContext('2d');
+const drawCar = (carCtx, angle) => {
   const carRadius = 40;
   const wheelRadius = wheelImage.imageWidth / 2;
   const r = wheelRadius + carRadius; //wheelRadius + 20;
   const xPos = Math.cos(toRadian(angle)) * r;
   const yPos = Math.sin(toRadian(angle)) * r;
-  console.log('여기', angle);
 
-  carCtx.clearRect(0, 0, carCanvas.width, carCanvas.height);
   carCtx.save();
   carCtx.beginPath();
   carCtx.arc(xPos + wheelImage.imageX + r - carRadius, yPos + wheelImage.imageY + r - carRadius, carRadius, 0, Math.PI, false);
@@ -61,6 +52,9 @@ const renderCar = (angle) => {
 
 const drawWheel = () => {
   const wheelCtx = canvas.wheelCtx;
+  const carCanvas = document.getElementById('carCanvas');
+  const carCtx = carCanvas.getContext('2d');
+
   wheelCtx.clearRect(0, 0, canvas.wheelCanvas.width, canvas.wheelCanvas.height);
   wheelCtx.save();
   wheelCtx.setTransform(1,0,0,1,0,0);
@@ -77,7 +71,15 @@ const drawWheel = () => {
     wheelImage.imageHeight
   );
 
-  renderCar(wheelDeg);
+
+  carCtx.clearRect(0, 0, carCanvas.width, carCanvas.height);
+
+  for (var i = 0; i < 11; i++) {
+    const carAngle = wheelDeg + (i * 36);
+    console.log('여기', carAngle);
+    drawCar(carCtx, carAngle);
+  }
+
 
   wheelCtx.restore();
 
