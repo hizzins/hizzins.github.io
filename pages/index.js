@@ -76,7 +76,6 @@ const drawWheel = () => {
 
   for (var i = 0; i < 11; i++) {
     const carAngle = wheelDeg + (i * 36);
-    console.log('여기', carAngle);
     drawCar(carCtx, carAngle);
   }
 
