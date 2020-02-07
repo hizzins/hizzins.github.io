@@ -14,11 +14,11 @@ let wheelImage = {};
 const getRatio = () => {
   const canvasWidth = 1920;
   return window.innerWidth / canvasWidth;
-}
+};
 
-const toRadian = (deg) => {
-  return deg * Math.PI / 180;
-}
+const toRadian = deg => {
+  return (deg * Math.PI) / 180;
+};
 
 const drawCar = (carCtx, angle) => {
   const carRadius = 40;
@@ -27,18 +27,29 @@ const drawCar = (carCtx, angle) => {
   const xPos = Math.cos(toRadian(angle)) * r;
   const yPos = Math.sin(toRadian(angle)) * r;
 
-  carCtx.save();
   carCtx.beginPath();
-  carCtx.arc(xPos + wheelImage.imageX + r - carRadius, yPos + wheelImage.imageY + r - carRadius, carRadius, 0, Math.PI, false);
-  carCtx.fillStyle = '#272e59';
-  carCtx.strokeStyle = '#272e59';
-  carCtx.lineWidth = 10;
+  carCtx.arc(
+    xPos + wheelImage.imageX + r - carRadius,
+    yPos + wheelImage.imageY + r - carRadius,
+    carRadius,
+    0,
+    Math.PI,
+    false
+  );
+  carCtx.fillStyle = "#272e59";
   carCtx.fill();
 
   carCtx.beginPath();
-  carCtx.arc(xPos + wheelImage.imageX + r - carRadius, yPos + wheelImage.imageY + r - carRadius, carRadius, 0, Math.PI *2, false);
-  carCtx.strokeStyle = '#272e59';
-  carCtx.lineWidth = 10;
+  carCtx.arc(
+    xPos + wheelImage.imageX + r - carRadius,
+    yPos + wheelImage.imageY + r - carRadius,
+    carRadius,
+    0,
+    Math.PI * 2,
+    false
+  );
+  carCtx.strokeStyle = "#272e59";
+  carCtx.lineWidth = 5;
   carCtx.stroke();
 
   // carCtx.beginPath();
@@ -46,22 +57,22 @@ const drawCar = (carCtx, angle) => {
   // carCtx.strokeStyle = '#dd4b39';
   // carCtx.lineWidth = 5;
   // carCtx.stroke();
-
-  carCtx.restore();
-}
+};
 
 const drawWheel = () => {
   const wheelCtx = canvas.wheelCtx;
-  const carCanvas = document.getElementById('carCanvas');
-  const carCtx = carCanvas.getContext('2d');
+  const carCanvas = document.getElementById("carCanvas");
+  const carCtx = carCanvas.getContext("2d");
 
   wheelCtx.clearRect(0, 0, canvas.wheelCanvas.width, canvas.wheelCanvas.height);
   wheelCtx.save();
-  wheelCtx.setTransform(1,0,0,1,0,0);
-  wheelCtx.translate(wheelImage.imageX + wheelImage.imageWidth / 2, wheelImage.imageY + wheelImage.imageHeight / 2);
+  wheelCtx.setTransform(1, 0, 0, 1, 0, 0);
+  wheelCtx.translate(
+    wheelImage.imageX + wheelImage.imageWidth / 2,
+    wheelImage.imageY + wheelImage.imageHeight / 2
+  );
   wheelCtx.rotate(toRadian(wheelDeg));
   // ctx.strokeRect(0 - wheelImage.imageWidth / 2, 0 - wheelImage.imageHeight / 2, wheelImage.imageWidth, wheelImage.imageHeight);
-
 
   wheelCtx.drawImage(
     wheelImage.image,
@@ -71,14 +82,12 @@ const drawWheel = () => {
     wheelImage.imageHeight
   );
 
-
   carCtx.clearRect(0, 0, carCanvas.width, carCanvas.height);
 
   for (var i = 0; i < 11; i++) {
-    const carAngle = wheelDeg + (i * 36);
+    const carAngle = wheelDeg + i * 36;
     drawCar(carCtx, carAngle);
   }
-
 
   wheelCtx.restore();
 
@@ -86,10 +95,9 @@ const drawWheel = () => {
   // wheelDeg = wheelDeg > 360 ? 0 : wheelDeg + 0.5; // 테스트용
 
   requestAnimationFrame(drawWheel);
-}
+};
 
 const Home = () => {
-
   useEffect(() => {
     const backgroundImage = {
       image: new Image(),
@@ -100,13 +108,13 @@ const Home = () => {
     };
 
     const ratio = getRatio();
-    const backgroundCanvas = document.getElementById('backgroundCanvas');
-    const wheelCanvas = document.getElementById('wheelCanvas');
+    const backgroundCanvas = document.getElementById("backgroundCanvas");
+    const wheelCanvas = document.getElementById("wheelCanvas");
     canvas = {
       backgroundCanvas,
-      backgroundCtx: backgroundCanvas.getContext('2d'),
+      backgroundCtx: backgroundCanvas.getContext("2d"),
       wheelCanvas,
-      wheelCtx: wheelCanvas.getContext('2d')
+      wheelCtx: wheelCanvas.getContext("2d")
     };
 
     backgroundImage.image.onload = () => {
@@ -118,7 +126,7 @@ const Home = () => {
         backgroundImage.imageHeight
       );
     };
-    backgroundImage.image.src = '/static/images/amusement-park.png';
+    backgroundImage.image.src = "/static/images/amusement-park.png";
 
     wheelImage = {
       image: new Image(),
@@ -127,9 +135,8 @@ const Home = () => {
       imageX: 765,
       imageY: 365
     };
-    wheelImage.image.src = '/static/images/wheel.png';
+    wheelImage.image.src = "/static/images/wheel.png";
     drawWheel();
-
   }, []);
 
   return (
@@ -144,43 +151,58 @@ const Home = () => {
         <h1 className="title">Hisney Land</h1>
         <p className="description">Hub page</p>
         <div className="wrap-canvas">
-          <canvas id="backgroundCanvas" className="background-canvas" width={canvasWidth} height={canvasHeight}></canvas>
-          <canvas id="wheelCanvas" className="wheel-canvas" width={canvasWidth} height={canvasHeight}></canvas>
-          <canvas id="carCanvas" className="wheel-canvas" width={canvasWidth} height={canvasHeight}></canvas>
+          <canvas
+            id="backgroundCanvas"
+            className="background-canvas"
+            width={canvasWidth}
+            height={canvasHeight}
+          ></canvas>
+          <canvas
+            id="wheelCanvas"
+            className="wheel-canvas"
+            width={canvasWidth}
+            height={canvasHeight}
+          ></canvas>
+          <canvas
+            id="carCanvas"
+            className="wheel-canvas"
+            width={canvasWidth}
+            height={canvasHeight}
+          ></canvas>
         </div>
       </main>
 
       <style jsx>{`
-      .contents {
-        height: 100vh;
-      }
-      .wrap-canvas {
-        position: relative;
-      }
-      .background-canvas,
-      .wheel-canvas{
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-      }
-      .background-canvas {
-        background-color: #fff;
-      }
-      .title {
-        margin: 0;
-        width: 100%;
-        padding-top: 30px;
-        font-size: 48px;
-        text-align: center;
-        color: #272e59;
-      }
-      .description {
-        text-align: center;
-      }
-    `}</style>
+        .contents {
+          height: 100vh;
+        }
+        .wrap-canvas {
+          position: relative;
+        }
+        .background-canvas,
+        .wheel-canvas {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+        }
+        .background-canvas {
+          background-color: #fff;
+        }
+        .title {
+          margin: 0;
+          width: 100%;
+          padding-top: 30px;
+          font-size: 48px;
+          text-align: center;
+          color: #272e59;
+        }
+        .description {
+          text-align: center;
+        }
+      `}</style>
     </div>
   );
-}
+};
 
 export default Home;
