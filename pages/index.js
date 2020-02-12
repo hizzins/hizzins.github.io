@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import Nav from "../components/nav";
+import L from "../lib/util";
 
 const canvasWidth = 1920;
 const canvasHeight = 1274;
@@ -11,52 +12,133 @@ let wheelDeg = 0;
 let canvas = {};
 let wheelImage = {};
 
+// e - playground,
+// d - blog,
+// c - zeplin,
+// b - remotemeeting,
+// a - google,
+// 9 - remotemeeting admin,
+// 8 - 언어리소스,
+// 7 - w3c
+// 6 - 그룹웨어
+// 5 - 레드마인
+
+const menuColorMap = [
+  {
+    backgroundColor: "#fefefe",
+    pointColor: "#272e58",
+    label: "playground",
+    link: "https://hizzins.github.io/playground/#/"
+  },
+  {
+    backgroundColor: "#fdfdfd",
+    pointColor: "#272e57",
+    label: "blog",
+    link: "https://hizzins.github.io/Notes/"
+  },
+  {
+    backgroundColor: "#fcfcfc",
+    pointColor: "#272e56",
+    label: "zeplin",
+    link: "https://app.zeplin.io/organization/5b8de02ca1e2154f3b1c2c52/projects"
+  },
+  {
+    backgroundColor: "#fbfbfb",
+    pointColor: "#272e55",
+    label: "remotemeeting",
+    link: "https://www.remotemeeting.com/ko/home"
+  },
+  {
+    backgroundColor: "#fafafa",
+    pointColor: "#272e54",
+    label: "google",
+    link: "https://www.google.com/"
+  },
+  {
+    backgroundColor: "#f9f9f3",
+    pointColor: "#272e52",
+    label: "redmine",
+    link: "https://projects.rsupport.com/login"
+  },
+  {
+    backgroundColor: "#f8f8f8",
+    pointColor: "#272e51",
+    label: "language doc",
+    link: "https://drive.google.com/drive/u/0/recent"
+  },
+  {
+    backgroundColor: "#f7f7f7",
+    pointColor: "#272e50",
+    label: "w3c",
+    link: "https://www.w3schools.com/graphics/canvas_text.asp"
+  },
+  {
+    backgroundColor: "#f6f6f6",
+    pointColor: "#272e5a",
+    label: "group ware",
+    link: "https://gw.rsupport.com/main/"
+  },
+  {
+    backgroundColor: "#f4f4f4",
+    pointColor: "#272e5c",
+    label: "conference room",
+    link:
+      "https://docs.google.com/spreadsheets/d/1iGe93gej2d52vq0PCZ2uOz4OHE4UOl3zDxAV0aCUJAQ/edit?usp=drive_web&ouid=115569187072603616122"
+  }
+  // { backgroundColor: "#f5f5f5", pointColor: "#272e5b", label: "admin", link: '' },
+];
+const menuLength = menuColorMap.length;
+
 const getRatio = () => {
-  const canvasWidth = 1920;
-  return window.innerWidth / canvasWidth;
+  const currentCanvasWidth = document.getElementById("carCanvas").clientWidth;
+  return canvasWidth / currentCanvasWidth;
 };
 
 const toRadian = deg => {
   return (deg * Math.PI) / 180;
 };
+const getMenuInfo = color => {
+  for (var i = 0; i < menuLength; i++) {
+    if (
+      menuColorMap[i].backgroundColor === color ||
+      menuColorMap[i].pointColor === color
+    ) {
+      return menuColorMap[i];
+    }
+  }
+  return undefined;
+};
 
-const drawCar = (carCtx, angle) => {
+const drawCar = (carCtx, angle, index) => {
   const carRadius = 40;
   const wheelRadius = wheelImage.imageWidth / 2;
-  const r = wheelRadius + carRadius; //wheelRadius + 20;
-  const xPos = Math.cos(toRadian(angle)) * r;
-  const yPos = Math.sin(toRadian(angle)) * r;
+  const r = wheelRadius + carRadius; // wheel의 반지름 + 자동차의 지름.
+  const xPos = Math.cos(toRadian(angle)) * r; // 관람차 그리는 시작점의 x좌표
+  const yPos = Math.sin(toRadian(angle)) * r; // 관람차 그리는 시작점의 y좌표
+  const x = xPos + wheelImage.imageX + r - carRadius;
+  const y = yPos + wheelImage.imageY + r - carRadius;
+  const manuInfo = menuColorMap[index];
+  const carBgColor = manuInfo.backgroundColor;
+  const carPointColor = manuInfo.pointColor;
+  const menuLabel = manuInfo.label;
 
   carCtx.beginPath();
-  carCtx.arc(
-    xPos + wheelImage.imageX + r - carRadius,
-    yPos + wheelImage.imageY + r - carRadius,
-    carRadius,
-    0,
-    Math.PI,
-    false
-  );
-  carCtx.fillStyle = "#272e59";
+  carCtx.arc(x, y, carRadius, 0, Math.PI * 2, false);
+  carCtx.strokeStyle = carPointColor;
+  carCtx.fillStyle = carBgColor;
+  carCtx.lineWidth = 5;
+  carCtx.stroke();
   carCtx.fill();
 
   carCtx.beginPath();
-  carCtx.arc(
-    xPos + wheelImage.imageX + r - carRadius,
-    yPos + wheelImage.imageY + r - carRadius,
-    carRadius,
-    0,
-    Math.PI * 2,
-    false
-  );
-  carCtx.strokeStyle = "#272e59";
-  carCtx.lineWidth = 5;
-  carCtx.stroke();
+  carCtx.arc(x, y, carRadius, 0, Math.PI, false);
+  carCtx.fillStyle = carPointColor;
+  carCtx.fill();
 
-  // carCtx.beginPath();
-  // carCtx.arc(wheelImage.imageX + r - carRadius, wheelImage.imageY + r - carRadius, r, 0, Math.PI *2, false);
-  // carCtx.strokeStyle = '#dd4b39';
-  // carCtx.lineWidth = 5;
-  // carCtx.stroke();
+  // carCtx.fillStyle = "#ecaf45";
+  // carCtx.textAlign = "center";
+  // carCtx.font = "40px Arial";
+  // carCtx.fillText(menuLabel, x, y - 45);
 };
 
 const drawWheel = () => {
@@ -83,16 +165,15 @@ const drawWheel = () => {
   );
 
   carCtx.clearRect(0, 0, carCanvas.width, carCanvas.height);
-
-  for (var i = 0; i < 11; i++) {
-    const carAngle = wheelDeg + i * 36;
-    drawCar(carCtx, carAngle);
-  }
-
   wheelCtx.restore();
 
+  for (var i = 0; i < menuLength; i++) {
+    const gap = 360 / menuLength; // 관람차 간격
+    const carAngle = wheelDeg + i * gap;
+    drawCar(carCtx, carAngle, i);
+  }
+
   wheelDeg = wheelDeg > 360 ? 0 : wheelDeg + 0.05;
-  // wheelDeg = wheelDeg > 360 ? 0 : wheelDeg + 0.5; // 테스트용
 
   requestAnimationFrame(drawWheel);
 };
@@ -106,10 +187,10 @@ const Home = () => {
       imageX: 1,
       imageY: 1
     };
-
-    const ratio = getRatio();
     const backgroundCanvas = document.getElementById("backgroundCanvas");
     const wheelCanvas = document.getElementById("wheelCanvas");
+    const menuCanvas = document.getElementById("menuCanvas");
+    const menuCtx = menuCanvas.getContext("2d");
     canvas = {
       backgroundCanvas,
       backgroundCtx: backgroundCanvas.getContext("2d"),
@@ -137,6 +218,67 @@ const Home = () => {
     };
     wheelImage.image.src = "/static/images/wheel.png";
     drawWheel();
+
+    document.getElementById("carCanvas").addEventListener("click", function(e) {
+      const menu = getMenu(this);
+
+      menuCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+      if (menu !== undefined) {
+        window.open("about:blank").location.href = menuInfo.link;
+      }
+    });
+
+    document
+      .getElementById("carCanvas")
+      .addEventListener("mousemove", function(e) {
+        const menu = getMenu(e, this);
+        const pos = findPos(this);
+        const ratio = getRatio();
+        const x = (e.pageX - pos.x) * ratio;
+        const y = (e.pageY - pos.y) * ratio;
+
+        menuCtx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        if (menu !== undefined) {
+          menuCtx.fillStyle = "#ecaf45";
+          menuCtx.textAlign = "center";
+          menuCtx.font = "40px Arial";
+          menuCtx.fillText(menu, x, y - 80);
+        }
+      });
+
+    function getMenu(e, target) {
+      const pos = findPos(target);
+      const ratio = getRatio();
+      const x = (e.pageX - pos.x) * ratio;
+      const y = (e.pageY - pos.y) * ratio;
+      const c = target.getContext("2d");
+      const p = c.getImageData(x, y, 1, 1).data;
+      const hex = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+      const menuInfo = getMenuInfo(hex);
+      const menu = menuInfo && menuInfo.label;
+      return menu;
+    }
+
+    function findPos(obj) {
+      let curleft = 0;
+      let curtop = 0;
+
+      if (obj.offsetParent) {
+        do {
+          curleft += obj.offsetLeft;
+          curtop += obj.offsetTop;
+        } while ((obj = obj.offsetParent));
+        return { x: curleft, y: curtop };
+      }
+      return undefined;
+    }
+
+    function rgbToHex(r, g, b) {
+      if (r > 255 || g > 255 || b > 255) throw "Invalid color component";
+      return ((r << 16) | (g << 8) | b).toString(16);
+    }
   }, []);
 
   return (
@@ -164,8 +306,14 @@ const Home = () => {
             height={canvasHeight}
           ></canvas>
           <canvas
+            id="menuCanvas"
+            className="menu-canvas"
+            width={canvasWidth}
+            height={canvasHeight}
+          ></canvas>
+          <canvas
             id="carCanvas"
-            className="wheel-canvas"
+            className="car-canvas"
             width={canvasWidth}
             height={canvasHeight}
           ></canvas>
@@ -180,7 +328,9 @@ const Home = () => {
           position: relative;
         }
         .background-canvas,
-        .wheel-canvas {
+        .wheel-canvas,
+        .menu-canvas,
+        .car-canvas {
           position: absolute;
           left: 0;
           top: 0;
